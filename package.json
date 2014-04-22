@@ -1,0 +1,21 @@
+{
+  "name": "ndn-telehashTransport",
+  "version": "0.0.0",
+  "description": "telehash transport module for NDN",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "NDN",
+    "Telehash"
+  ],
+  "author": "Ryan Bennett",
+  "license": "GPL",
+  "dependencies": {
+    "leveldown": "^0.10.2",
+    "levelup": "^0.18.2",
+    "telehash": "^0.2.12",
+    "telehash-seeds": "0.0.4"
+  }
+}
