@@ -7,20 +7,21 @@ var ndnbuf = ndn.customBuffer;
 var Name = ndn.Name
 var Data = ndn.Data
 
-var local = {}
+var telehash = {}
 
-local.transport = function (hashname, channel) {
+telehash.transport = function (hashname, channel) {
   this.hashname = hashname
   var faceSelf = this
   if (channel) {
     this.channel = channel
+
   }
 };
 
-local.start = function(appname, listenCallback) {
+telehash.start = function(appname, listenCallback) {
   function assigner (selfie){
     self = selfie
-    self.listen("_ndn", listenCallback)
+    listenCallback(self)
   }
   require("./lib/node/init.js")(appname, assigner)
 }
@@ -31,23 +32,22 @@ local.start = function(appname, listenCallback) {
  * Listen on the port to read an entire binary XML encoded element and call
  *    face.onReceivedElement(element).
  */
-local.transport.prototype.connect = function(face, onopenCallback)
+telehash.transport.prototype.connect = function(face, onopenCallback)
 {
   this.elementReader = new ElementReader(face);
   var faceSelf= this;
+  face.transport = this
+  //console.log("call to connec!!!!!!!!!!!!!!!!!!!!!!")
 
   function listener (end, packet, chan, cb) {
-    console.log("got packet!", packet)
+    console.log("got packet!", chan)
     if (packet.js == "ndn"){
 
       var ev = packet.body
-      console.log('RecvHandle called on local face', ev, typeof ev);
-      var bytearray = new ndnbuf(ev);
-      console.log(ev.data)
-      console.log(bytearray)
+      console.log('RecvHandle called on telehash face', ev, typeof ev);
       try {
         // Find the end of the binary XML element and call face.onReceivedElement.
-        faceSelf.elementReader.onReceivedData(bytearray);
+        faceSelf.elementReader.onReceivedData(ev);
       } catch (ex) {
         console.log("NDN.ws.onmessage exception: " + ex);
         return;
@@ -56,25 +56,22 @@ local.transport.prototype.connect = function(face, onopenCallback)
       //var ms = new MessageChannel()
 
     }
+    cb(true)
   }
-  if (!faceSelf.channel || faceSelf.channel.ended){
-    self.start(faceSelf.hashname, "_ndn", {js: "incoming"}, function(err, packet, channel){
-      if (packet.js == "ack"){
-        console.log('got ack')
-        channel.callback = listener
+  if (!face.transport.channel || face.transport.channel.ended){
+    //console.log("channel not defined, begin listening")
+    self.start(face.transport.hashname, "ndn", {js:"incoming"}, function(err, packet, chan, callb){
+      console.log("defined channel", chan)
+      chan.callback = listener
+      face.transport.channel = chan
+      face.transport.channel.callback = listener
+      callb(true)
+      onopenCallback()
 
-        faceSelf.channel = channel
-        channel.ack()
-        channel.send({js:"ack"})
-        onopenCallback();
-      }
-    });
+    })
+
   } else {
-    console.log("channel is DEFINED", faceSelf.channel)
-    faceSelf.channel.callback = listener
-    faceSelf.channel.ack()
-    faceSelf.channel.send({js:"ack"})
-
+    face.transport.channel.callback = listener
     onopenCallback()
   }
 
@@ -85,29 +82,15 @@ local.transport.prototype.connect = function(face, onopenCallback)
 /**
  * Send the Uint8Array data.
  */
-local.transport.prototype.send = function(data)
+telehash.transport.prototype.send = function(data)
 {
-  if (true) {
-        // If we directly use data.buffer to feed ws.send(),
-        // WebSocket may end up sending a packet with 10000 bytes of data.
-        // That is, WebSocket will flush the entire buffer
-        // regardless of the offset of the Uint8Array. So we have to create
-        // a new Uint8Array buffer with just the right size and copy the
-        // content from binaryInterest to the new buffer.
-        //    ---Wentao
-        var bytearray = new Uint8Array(data.length);
-        bytearray.set(data);
-        console.log("sending over telehash!", this.channel)
-        this.channel.send({js:"ndnLDKHFLDHGLKHD"})
+  console.log(!this.channel, !this.channel.ended)
+  if ((!this.channel == false) && !this.channel.ended) {
+    this.channel.send({js:"ndn", body: data})
 
-        //garbage collect
-        //var ms = new MessageChannel();
-        //ms.port1.postMessage(bytearray.buffer, [bytearray.buffer])
-        //ms.port1.postMessage(data.buffer, [data.buffer])
-    console.log('local.send() returned.');
   }
   else
-    console.log('local connection is not established.');
+    console.log('telehash connection is not established.');
 };
 
-module.exports = local;
+module.exports = telehash;
