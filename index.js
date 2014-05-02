@@ -40,7 +40,7 @@ telehash.transport.prototype.connect = function(face, onopenCallback)
   //console.log("call to connec!!!!!!!!!!!!!!!!!!!!!!")
 
   function listener (end, packet, chan, cb) {
-    console.log("got packet!", chan)
+    //console.log("got packet!", chan, packet)
     if (packet.js == "ndn"){
 
       var ev = packet.body
@@ -61,7 +61,8 @@ telehash.transport.prototype.connect = function(face, onopenCallback)
   if (!face.transport.channel || face.transport.channel.ended){
     //console.log("channel not defined, begin listening")
     self.start(face.transport.hashname, "ndn", {js:"incoming"}, function(err, packet, chan, callb){
-      console.log("defined channel", chan)
+      //console.log("defined channel", chan, packet)
+      listener(err, packet, chan, callb)
       chan.callback = listener
       face.transport.channel = chan
       face.transport.channel.callback = listener
@@ -72,6 +73,7 @@ telehash.transport.prototype.connect = function(face, onopenCallback)
 
   } else {
     face.transport.channel.callback = listener
+    //console.log("channel defined, callingback", face.transport.channel.callback)
     onopenCallback()
   }
 

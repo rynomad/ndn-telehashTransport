@@ -3,7 +3,8 @@ var ndn = require('ndn-lib')
 
 trans.start('app1', function(self) {
 
-  var hn = '0a64da4ef9f6d62121bb24bbcd1391ae0274106ff27cae8a918ffa75d3864209'
+  var hn = '731871204fd52f8e17066d48dff419cca9439c97d899c2e4b00b24857fb7a218'
+
   var face = new ndn.Face({host: 111, port: 222, getTransport: function(){return new trans.transport(hn)}})
 
   face.transport.connect(face, function(){

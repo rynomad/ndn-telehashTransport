@@ -14,6 +14,7 @@ function onInterest(prefix, interest, transport) {
 
 }
 trans.start('app2', function(self){
+  console.log(self.hashname)
   self.listen("ndn", function(err, packet, chan, callb){
     console.log(chan)
     callb(true)
@@ -21,16 +22,16 @@ trans.start('app2', function(self){
     console.log(packet.js)
     function onopen(){
 
-
+      callb(true)
       console.log("app2 transport open", callb)
 
       var d = new ndn.Data(new ndn.Name('thing'), new ndn.SignedInfo(), "success")
       d.signedInfo.setFields()
       d.sign()
       setTimeout(function(){
-
+        console.log('sending from app2 to app1', face.transport)
         face.transport.send(d.wireEncode().buffer)
-      }, 4000)
+      }, 10000)
 
     }
 
