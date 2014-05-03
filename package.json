@@ -11,8 +11,12 @@
     "Telehash"
   ],
   "author": "Ryan Bennett",
+  "browser": {
+    "./lib/node/init.js": "./lib/browser/init.js"
+  },
   "license": "GPL",
   "dependencies": {
+    "Browser-Key": "*",
     "leveldown": "^0.10.2",
     "levelup": "^0.18.2",
     "telehash": "^0.2.12",

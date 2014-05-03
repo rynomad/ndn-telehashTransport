@@ -23,7 +23,7 @@ telehash.start = function(appname, listenCallback) {
     self = selfie
     listenCallback(self)
   }
-  require("./lib/node/init.js")(appname, assigner)
+  require("./lib/node/init.js")(appname, assigner, "testbspassword")
 }
 
 /**
@@ -88,6 +88,7 @@ telehash.transport.prototype.send = function(data)
 {
   console.log(!this.channel, !this.channel.ended)
   if ((!this.channel == false) && !this.channel.ended) {
+    //console.log(data)
     this.channel.send({js:"ndn", body: data})
 
   }
