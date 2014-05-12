@@ -1,6 +1,6 @@
 {
   "name": "ndn-telehash-transport",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "telehash transport module for NDN",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "license": "GPL",
   "dependencies": {
-    "Browser-Key": "*",
+    "browser-key": "*",
     "leveldown": "^0.10.2",
     "levelup": "^0.18.2",
     "telehash": "^0.2.12",
