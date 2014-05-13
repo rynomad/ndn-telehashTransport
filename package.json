@@ -19,7 +19,7 @@
     "browser-key": "*",
     "leveldown": "^0.10.2",
     "levelup": "^0.18.2",
-    "telehash": "^0.2.12",
+    "telehash": "git+https://github.com/rynomad/node-telehash.git#atom",
     "telehash-seeds": "0.0.5",
     "ndn-lib": "git+https://github.com/rynomad/ndn-js.git"
   }
