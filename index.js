@@ -41,7 +41,8 @@ telehash.transport.prototype.connect = function(face, onopenCallback)
 
   function listener (end, packet, chan, cb) {
     //console.log("got packet!", chan, packet)
-    if (packet.js == "ndn"){
+
+    if ((packet) && (packet.js == "ndn")){
 
       var ev = packet.body
       console.log('RecvHandle called on telehash face', ev, typeof ev);
@@ -62,6 +63,7 @@ telehash.transport.prototype.connect = function(face, onopenCallback)
     //console.log("channel not defined, begin listening")
     self.start(face.transport.hashname, "ndn", {js:"incoming"}, function(err, packet, chan, callb){
       //console.log("defined channel", chan, packet)
+      if (err) return
       listener(err, packet, chan, callb)
       chan.callback = listener
       face.transport.channel = chan
